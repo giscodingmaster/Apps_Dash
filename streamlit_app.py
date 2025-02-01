@@ -32,6 +32,9 @@ choropleth_fig.update_traces(
     hovertemplate='<b>%{location}</b><br>Population: %{z:,.0f}<extra></extra>'
 )
 
+# State selection
+st.header("Population Trend")
+
 # Render the map with selection
 selected_state = st.plotly_chart(
     choropleth_fig, 
@@ -39,16 +42,20 @@ selected_state = st.plotly_chart(
     key="population_map"
 )
 
-# State Selection
-st.header("Population Trend")
+# Debugging: Print selected_state type and value
+st.write(f"Debug - Selected State Type: {type(selected_state)}")
+st.write(f"Debug - Selected State Value: {selected_state}")
 
-# Check if a state was selected
-if selected_state:
+# Ensure selected_state is a string
+if selected_state and isinstance(selected_state, str):
     st.write(f"Selected State: {selected_state}")
     
     # Create line chart for selected state
-    line_fig = create_line_chart(df, selected_state)
-    st.plotly_chart(line_fig, use_container_width=True)
+    try:
+        line_fig = create_line_chart(df, selected_state)
+        st.plotly_chart(line_fig, use_container_width=True)
+    except Exception as e:
+        st.error(f"Error creating line chart: {e}")
 else:
     st.write("Click on a state in the map to see its population trend")
 

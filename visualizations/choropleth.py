@@ -4,10 +4,10 @@ import pandas as pd
 
 def create_choropleth_map(data, selected_year):
     """
-    Create a choropleth map of state populations for a given year.
+    Create a choropleth map of population by state for a given year.
     
     Args:
-        data (pandas.DataFrame): Population dataset
+        data (pd.DataFrame): Population data
         selected_year (int): Year to visualize
     
     Returns:
@@ -35,8 +35,9 @@ def create_choropleth_map(data, selected_year):
         marker_line_width=0.5
     )
     
-    # Adjust layout for better readability
+    # Add click event support
     fig.update_layout(
+        clickmode='event+select',
         title_x=0.5,
         geo_scope='usa',
         height=600,

@@ -32,6 +32,10 @@ choropleth_fig.update_traces(
     hovertemplate='<b>%{location}</b><br>Population: %{z:,.0f}<extra></extra>'
 )
 
+# Initialize session state for selected state
+if 'selected_state' not in st.session_state:
+    st.session_state.selected_state = None
+
 # Render the map
 clicked_state = st.plotly_chart(choropleth_fig, use_container_width=True, on_click="rerun")
 
@@ -41,13 +45,22 @@ st.header("Population Trend")
 # Check if a state was clicked
 if clicked_state and 'points' in clicked_state:
     selected_state = clicked_state['points'][0]['location']
+    st.session_state.selected_state = selected_state
     st.write(f"Selected State: {selected_state}")
     
     # Create line chart for selected state
     line_fig = create_line_chart(df, selected_state)
     st.plotly_chart(line_fig, use_container_width=True)
 else:
-    st.write("Click on a state in the map to see its population trend")
+    if st.session_state.selected_state:
+        selected_state = st.session_state.selected_state
+        st.write(f"Selected State: {selected_state}")
+        
+        # Create line chart for selected state
+        line_fig = create_line_chart(df, selected_state)
+        st.plotly_chart(line_fig, use_container_width=True)
+    else:
+        st.write("Click on a state in the map to see its population trend")
 
 # Requirements file for Streamlit Cloud
 with open('requirements.txt', 'w') as f:

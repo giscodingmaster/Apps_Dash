@@ -1,5 +1,4 @@
 import plotly.express as px
-import plotly.graph_objs as go
 import pandas as pd
 
 def create_choropleth_map(data, selected_year):
@@ -35,9 +34,8 @@ def create_choropleth_map(data, selected_year):
         marker_line_width=0.5
     )
     
-    # Add click event support
+    # Adjust layout
     fig.update_layout(
-        clickmode='event+select',
         title_x=0.5,
         geo_scope='usa',
         height=600,

@@ -26,20 +26,28 @@ selected_year = st.sidebar.selectbox(
 # Choropleth Map
 st.header("Population Choropleth Map")
 choropleth_fig = create_choropleth_map(df, selected_year)
-st.plotly_chart(choropleth_fig, use_container_width=True)
+
+# Add hover template to show more information
+choropleth_fig.update_traces(
+    hovertemplate='<b>%{location}</b><br>Population: %{z:,.0f}<extra></extra>'
+)
+
+# Render the map
+clicked_state = st.plotly_chart(choropleth_fig, use_container_width=True, on_click="rerun")
 
 # State Selection
 st.header("Population Trend")
-st.write("Click on a state in the map above to see its population trend")
 
-# Placeholder for line chart
-line_chart_placeholder = st.empty()
-
-# Add interactivity
-if st.session_state.get('last_clicked_state'):
-    clicked_state = st.session_state.last_clicked_state
-    line_fig = create_line_chart(df, clicked_state)
-    line_chart_placeholder.plotly_chart(line_fig, use_container_width=True)
+# Check if a state was clicked
+if clicked_state and 'points' in clicked_state:
+    selected_state = clicked_state['points'][0]['location']
+    st.write(f"Selected State: {selected_state}")
+    
+    # Create line chart for selected state
+    line_fig = create_line_chart(df, selected_state)
+    st.plotly_chart(line_fig, use_container_width=True)
+else:
+    st.write("Click on a state in the map to see its population trend")
 
 # Requirements file for Streamlit Cloud
 with open('requirements.txt', 'w') as f:
